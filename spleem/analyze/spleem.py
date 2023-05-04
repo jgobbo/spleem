@@ -2,6 +2,7 @@ import re, os
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import Union
 from numpy.typing import NDArray
 from PIL import Image as Tif  # I want the name Image
 from scipy.interpolate import interp1d
@@ -316,6 +317,7 @@ def electron_rate(image: Image, exposure=1, min_persistence=20) -> tuple[float, 
 def test_electron_counting(
     image: Image, min_persistence=20, test_frame: int = 0, **kwargs
 ):
+    ax: list[plt.Axes]
     fig, ax = plt.subplots(1, 2, figsize=(14, 7))
     ax[0].imshow(image.frames[test_frame].data, **kwargs)
 
@@ -352,7 +354,9 @@ def load_scan(folder, desired_index: int):
                         return SpinImage(Path(root) / Path(directory))
 
 
-def load_all(folder, inclusions: tuple[int, ...] = None) -> dict:
+def load_all(
+    folder, inclusions: tuple[int, ...] = None
+) -> dict[int : Union[Image, Sweep, SpinImage, SpinSweep]]:
     if inclusions is not None:
         inclusions = set(inclusions)  # probably isnt meaningful but its fun
 

@@ -21,6 +21,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+edited by Jacob Gobbo
 """
 
 import socket
@@ -155,7 +157,9 @@ class oLeem:
     def __enter__(self):
         return self
 
-    def __init__(self, ip="192.168.178.26", port=5566, directConnect=True):
+    def __init__(
+        self, ip: str = "192.168.178.26", port: int = 5566, directConnect: bool = True
+    ):
         if not isinstance(ip, str):
             print("LEEM_Host must be a string. Using localhost instead.")
             self.ip = socket.gethostbyname(socket.gethostname())
@@ -171,7 +175,7 @@ class oLeem:
         self.lastTime = time.time()
 
         if directConnect:
-            print("Connect with ip=" + str(self.ip) + ", port=" + str(self.port))
+            print(f"Connect with ip: {self.ip}, port: {self.port}")
             self.connect()
 
     def __exit__(self, type, value, traceback):
@@ -189,8 +193,10 @@ class oLeem:
 
     def connect(self):
         if self.Leem2000Connected:
-            print('Already connected ... exit "connect" method')
-            return
+            raise Exception("Already connected")
+
+            # print('Already connected ... exit "connect" method')
+            # return
         else:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             print("connecting leem with")
@@ -226,38 +232,49 @@ class oLeem:
                 self.s.settimeout(None)
                 self.s.close()
                 return True
-            except:
+            except Exception:
                 print("connection not possible")
                 print("please check: that LEEM is running")
                 print("              the IP address is correct")
                 print("              the PORT is the same activated in LEEM2000")
                 return False
-            else:
-                return False
+            # else:
+            #     return False
 
-    def setIP(self, IP):
+    def setIP(self, IP: str):
         if self.Leem2000Connected:
-            print("Already connected ... close connection first")
-            return
-        else:
-            if type(IP) != str:
-                print("The IP has to be a string. Please use this synthax:")
-                print("object.setIP('192.168.1.0')")
-                print("or")
-                print("object.setIP('localhost')")
-                return
-            self.ip = str(IP)
+            raise Exception("Close connection before changing IP.")
+            # print("Already connected ... close connection first")
+            # return
+        # else:
+        # if type(IP) != str:
+        # print("The IP has to be a string. Please use this synthax:")
+        # print("object.setIP('192.168.1.0')")
+        # print("or")
+        # print("object.setIP('localhost')")
+        # return
+        # self.ip = str(IP)
+        elif not isinstance(IP, str):
+            raise Exception("IP must be a string.")
+        self.ip = IP
 
-    def setPort(self, port):
+        return self
+
+    def setPort(self, port: int):
         if self.Leem2000Connected:
-            print("Already connected ... close connection first")
-            return
-        else:
-            if type(port) != int:
-                print("The port has to be a number. Please use this synthax:")
-                print("object.setPort(5566)")
-                return
-            self.port = str(port)
+            raise Exception("Close connection before changing port.")
+            # print("Already connected ... close connection first")
+            # return
+        elif not isinstance(port, int):
+            raise Exception("The port needs to be an integer.")
+        # else:
+        # if type(port) != int:
+        # print("The port has to be a number. Please use this synthax:")
+        # print("object.setPort(5566)")
+        # return
+        self.port = str(port)
+
+        return self
 
     def disconnect(self):
         if self.Leem2000Connected:
@@ -268,14 +285,17 @@ class oLeem:
 
     def updateValues(self):
         if not self.Leem2000Connected:
-            print("Please connect first")
-            return None
+            raise Exception("Connect before updating values.")
+            # print("Please connect first")
+            # return None
         else:
             self.Values = {}
             for x in self.Mnemonic:
-                data = getTcp(self.s, "get " + self.Modules[x], True, False, False)
+                data = getTcp(self.s, f"get {self.Modules[x]}", True, False, False)
                 if is_number(data):
                     self.Values[x] = float(data)
+
+        return self
 
     def updateModules(self):
         if not self.Leem2000Connected:
@@ -322,11 +342,10 @@ class oLeem:
                 if not data in ["", "invalid"] and is_number(data):
                     return float(data)
                 else:
-                    return (
-                        "invalid number " + str(m) + ". Return from leem=" + str(data)
-                    )
+                    return f"invalid number {m}. Return from leem={data}"
+
             else:
-                return "Module number " + str(module) + " not found"
+                return f"Module number {module} not found."
         else:
             module = str(module)
             if module.upper() in self.invModules:

@@ -1,3 +1,3 @@
-# Leem
+# Spleem
 
-This is a package for analyzing leem data.
+This is a package for analyzing spleem data.

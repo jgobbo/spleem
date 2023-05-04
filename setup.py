@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 ROOT = Path(__file__).parent
 
 VERSION = "0.0.1"
-PACKAGE_NAME = "leem"
+PACKAGE_NAME = "spleem"
 AUTHOR = "Jacob Gobbo"
 AUTHOR_EMAIL = "jgobbo@berkeley.edu"
 URL = ""
